@@ -1,0 +1,135 @@
+<div class="container">
+    <div class="text-left" style="margin: 20px 0">
+        <a href="#/contacts"><span class="glyphicon glyphicon-arrow-left"></span></a>
+    </div>
+
+    <h1 class="text-center" ng-if="!editStatus">Add Contact</h1>
+    <h1 class="text-center" ng-if="editStatus">Edit Contact</h1>
+
+    <form class="form-horizontal" name="contactForm" novalidate>
+        <div class="form-group"
+             ng-class="{ 'has-error' : contactForm.firstName.$invalid && contactForm.firstName.$touched }">
+            <label class="control-label col-sm-2" for="firstName">First Name:</label>
+            <div class="col-sm-10">
+                <input id="firstName" name="firstName" class="form-control" data-ng-model="contact.firstName"
+                       type="text" placeholder="Enter your first name" required>
+                <p ng-show="contactForm.firstName.$invalid && contactForm.firstName.$touched" class="help-block">Your
+                    first name is required.</p>
+            </div>
+
+        </div>
+        <div class="form-group"
+             ng-class="{ 'has-error' : contactForm.lastName.$invalid && contactForm.lastName.$touched }">
+            <label class="control-label col-sm-2" for="lastName">Last Name:</label>
+            <div class="col-sm-10">
+                <input id="lastName" name="lastName" class="form-control" data-ng-model="contact.lastName" type="text"
+                       placeholder="Enter your last name" required>
+                <p ng-show="contactForm.lastName.$invalid && contactForm.lastName.$touched" class="help-block">Your last
+                    name is required.</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : contactForm.email.$invalid && contactForm.email.$touched }">
+            <label class="control-label col-sm-2" for="email">Email:</label>
+            <div class="col-sm-10">
+                <p ng-show="contactForm.email.$invalid && contactForm.email.$touched" class="help-block">A valid
+                    email is required.</p>
+                <div class="input-group">
+                    <input id="email" name="email" class="form-control" data-ng-model="contact.emailAddress" type="text"
+                           ng-pattern="/^(([^<>()\[\]\\.,;:\s@](\.[^<>()\[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/"
+                           placeholder="example@gmail.com" required>
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" ng-click="addAdditionalEmail()" type="button"><i
+                                class="glyphicon glyphicon-plus"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" ng-repeat="email in contact.additionalEmails track by $index"
+             ng-class="{ 'has-error' : contactForm['email_' + $index].$invalid && contactForm['email_' + $index].$touched }">
+            <label class="control-label col-sm-2" for="email"></label>
+            <div class="col-sm-10">
+                <p ng-show="contactForm['email_' + $index].$invalid && contactForm['email_' + $index].$touched" class="help-block">A valid email is required.</p>
+                <div class="input-group">
+                    <input id="{{email}}" name="email_{{$index}}" class="form-control"
+                           data-ng-model="contact.additionalEmails[$index]" type="text"
+                           ng-pattern="/^(([^<>()\[\]\\.,;:\s@](\.[^<>()\[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/"
+                           placeholder="example@gmail.com" required>
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" ng-click="deleteAdditionalEmail($index)" type="button"><i
+                                class="glyphicon glyphicon-minus"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : contactForm.phone.$invalid && contactForm.phone.$touched }">
+            <label class="control-label col-sm-2" for="phone">Phone number:</label>
+            <div class="col-sm-10">
+                <p ng-show="contactForm.phone.$invalid && contactForm.phone.$touched" class="help-block">A valid
+                    phone is required.</p>
+                <div class="input-group">
+                    <input id="phone" name="phone" class="form-control" data-ng-model="contact.phone" type="text"
+                           ng-pattern="/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/" placeholder="XXX-XXX-XXXX"
+                           required>
+
+                    <span class="input-group-btn">
+        <button class="btn btn-primary" ng-click="addAdditionalPhone()" type="button"><i class="glyphicon glyphicon-plus"></i></button>
+      </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group"
+             ng-repeat="phone in contact.additionalPhones track by $index"
+             ng-class="{'has-error' : contactForm['phone_' + $index].$invalid && contactForm['phone_' + $index].$touched }">
+            <label class="control-label col-sm-2" for="phone"></label>
+            <div class="col-sm-10">
+                <p ng-show="contactForm['phone_' + $index].$invalid && contactForm['phone_' + $index].$touched" class="help-block">A valid
+                    phone is required.</p>
+                <div class="input-group">
+                    <input id="{{phone}}" name="phone_{{$index}}" class="form-control"
+                           data-ng-model="contact.additionalPhones[$index]"
+                           type="text"
+                           ng-pattern="/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/" placeholder="XXX-XXX-XXXX"
+                           required>
+                    <span class="input-group-btn">
+        <button class="btn btn-danger" ng-click="deleteAdditionalPhone($index)" type="button"><i class="glyphicon glyphicon-minus"></i></button>
+      </span>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete contact</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure want to delete this contact?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" data-ng-click="deleteContact()"  class="btn btn-danger" data-dismiss="modal">Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button ng-if="!editStatus" class="btn btn-primary" type="button"
+                        data-ng-disabled="contactForm.$invalid"
+                        data-ng-click="insertContact()">Add Contact
+                </button>
+                <button ng-if="editStatus" class="btn btn-primary" type="button"
+                        data-ng-disabled="contactForm.$invalid"
+                        data-ng-click="editContact()">Edit Contact
+                </button>
+                <button ng-if="editStatus" class="btn btn-danger" type="button"
+                        data-ng-disabled="contactForm.$invalid"
+                        data-toggle="modal" data-target="#myModal">
+                        Delete Contact
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
